@@ -1,0 +1,5 @@
+---
+port-channels:
+  - { name: Port-Channel1, description: Desc, enable: true, members: Ethernet1,Ethernet2}
+#  - { name: Port-Channel1, description: Desc, enable: true, members: Etherne1,Ethernet2}
+

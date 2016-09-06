@@ -1,0 +1,8 @@
+- name: Configure PortChannel
+  eos_portchannel: name={{ item.name }} description={{ item.description }} enable={{ item.enable }} members={{ item.members }}
+    username={{ eapi_username }}
+    password={{ eapi_password }}
+    host={{ eapi_hostname }}
+    port={{ eapi_port }}
+    transport=https
+  with_items: port-channels

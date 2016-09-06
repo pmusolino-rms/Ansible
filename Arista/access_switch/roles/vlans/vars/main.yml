@@ -1,0 +1,7 @@
+---
+vlans:
+# Adding absent for exercise 3 to delete
+  - { name: DMZ, vlanid: 2, state: present}
+  - { name: CORE, vlanid: 3, state: present}
+  - { name: SOMETHINGELSE, vlanid: 4, state: present}
+

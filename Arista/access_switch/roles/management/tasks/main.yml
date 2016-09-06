@@ -1,0 +1,54 @@
+- name: Configure snmp
+  eos_config: command="snmp-server community {{ item.snmp_comm }} {{ item.snmp_mode }}"
+    username={{ eapi_username }}
+    password={{ eapi_password }}
+    host={{ eapi_hostname }}
+    port={{ eapi_port }}
+    transport=https
+  with_items: snmp
+
+- name: Configure snmp
+  eos_config: command="snmp-server host {{ item.snmp_host }} version {{ item.snmp_version }} {{ item.snmp_comm }}"
+    username={{ eapi_username }}
+    password={{ eapi_password }}
+    host={{ eapi_hostname }}
+    port={{ eapi_port }}
+    transport=https
+  with_items: snmp
+
+- name: Configure syslog
+  eos_config: command="logging host {{ item.logging_1 }}"
+    username={{ eapi_username }}
+    password={{ eapi_password }}
+    host={{ eapi_hostname }}
+    port={{ eapi_port }}
+    transport=https
+  with_items: syslog
+
+- name: Configure syslog
+  eos_config: command="logging host {{ item.logging_2 }}"
+    username={{ eapi_username }}
+    password={{ eapi_password }}
+    host={{ eapi_hostname }}
+    port={{ eapi_port }}
+    transport=https
+  with_items: syslog
+
+- name: Configure radius
+  eos_config: command="radius-server host {{ item.rad_host1 }} key {{ item.radius_key }}"
+    username={{ eapi_username }}
+    password={{ eapi_password }}
+    host={{ eapi_hostname }}
+    port={{ eapi_port }}
+    transport=https
+  with_items: radius
+
+- name: Configure radius
+  eos_config: command="radius-server host {{ item.rad_host2 }} key {{ item.radius_key }}"
+    username={{ eapi_username }}
+    password={{ eapi_password }}
+    host={{ eapi_hostname }}
+    port={{ eapi_port }}
+    transport=https
+  with_items: radius
+

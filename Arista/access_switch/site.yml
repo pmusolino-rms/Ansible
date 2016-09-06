@@ -1,0 +1,9 @@
+---
+- name: switch configuration
+  hosts: arista
+  roles:
+#    - vlans
+#    - port-channels
+#    - interfaces
+    - system
+#    - management

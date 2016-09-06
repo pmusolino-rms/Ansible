@@ -1,0 +1,8 @@
+# Uncomment for creation
+- name: set hostname
+  eos_system: hostname={{ eapi_hostname }} 
+    username={{ eapi_username }}
+    password={{ eapi_password }}
+    host={{ eapi_hostname }}
+    port={{ eapi_port }}
+    transport=https
