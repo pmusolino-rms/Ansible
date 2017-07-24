@@ -1,0 +1,41 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: nj_junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: Define Vlans
+      debug: msg="{{ hostvars[vlans] }}"
+
+#### XML PARSE FPC
+#    - name: Get fpc numbers
+#      junos_command:
+#        commands:
+#          - "show chassis fpc"
+#          - "show chassis hardware"
+#        provider: "{{ netconf }}"
+#        display: xml
+#      register: result
+#
+#    - name: output to file
+#      copy: content="{{ result.stdout[0] }}" dest=/tmp/fpc.txt
+#
+#    - name: SET VARIABLE FPC
+#      set_fact: 
+#        chassis_fpc="{{ lookup('xmlfile', 'file=/tmp/fpc.txt xpath=.//chassis[name="Chassis"]/chassis-module/name') | replace("\n","") }}"
+#
+#    - name: Print info
+#      debug: msg="Slot {{ item[4:] }}"
+#      with_items: "{{ chassis_fpc.split(',') }}"
+#      when: item | search("FPC")

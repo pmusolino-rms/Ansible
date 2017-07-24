@@ -1,0 +1,58 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: nj_junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: Define Vlans
+      junos_config:
+        lines:
+          - set vlans {{ item.name }} vlan-id {{ item.vlanid }}
+        comment: Set Vlans
+        provider: "{{ netconf }}"
+      with_items: "{{ vlans }}"
+
+    - name: Get fpc numbers
+      junos_command:
+        commands:
+          - "show chassis hardware"
+        provider: "{{ netconf }}"
+        display: xml
+      register: result
+
+    - name: output to file
+      copy: content="{{ result.stdout[0] }}" dest=/tmp/fpc.txt
+
+    - name: SET VARIABLE FPC
+      set_fact:
+        chassis_fpc="{{ lookup('xmlfile', 'file=/tmp/fpc.txt xpath=.//chassis[name="Chassis"]/chassis-module/name') | replace("\n","") }}"
+
+    - name: Assign User port range 
+      junos_config:
+        lines:
+          - set interfaces interface-range USER-PORTS member-range ge-{{ item[4:] }}/0/3 to ge-{{ item[4:] }}/0/47
+        comment: Set User Port ranges
+        provider: "{{ netconf }}"
+      with_items: "{{ chassis_fpc.split(',') }}"
+      when: item | search("FPC")
+
+    - name: Assign Vlans to Ports
+      junos_config:
+        lines:
+          - set interfaces interface-range USER-PORTS unit 0 family ethernet-switching interface-mode access
+          - set interfaces interface-range USER-PORTS unit 0 family ethernet-switching vlan members {{ item.name }}
+        comment: Set Vlans
+        provider: "{{ netconf }}"
+      with_items: "{{ vlans }}"
+      when: item.user == True

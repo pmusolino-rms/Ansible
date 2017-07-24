@@ -1,0 +1,15 @@
+---
+- name: Just the facts maam
+  hosts: nj_junos_ex
+  roles:
+  - Juniper.junos
+  tasks:
+  - name: Juniper connection test
+    wait_for: host={{ inventory_hostname }} port=830
+
+  - name: Retrieve the facts
+    junos_facts:  host={{ inventory_hostname }}
+    register: ansible_facts
+
+  - name: Print info
+    debug: msg="{{ ansible_facts }}"

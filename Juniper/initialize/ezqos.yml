@@ -1,0 +1,46 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: nj_junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: EZQOS SETTINGS
+      junos_config:
+        lines:
+          - set groups ezqos-voip class-of-service classifiers dscp ezqos-dscp-classifier import default
+          - set groups ezqos-voip class-of-service classifiers dscp ezqos-dscp-classifier forwarding-class ezqos-voice-fc loss-priority low code-points 101110
+          - set groups ezqos-voip class-of-service classifiers dscp ezqos-dscp-classifier forwarding-class ezqos-control-fc loss-priority low code-points 110000
+          - set groups ezqos-voip class-of-service classifiers dscp ezqos-dscp-classifier forwarding-class ezqos-control-fc loss-priority low code-points 011000
+          - set groups ezqos-voip class-of-service classifiers dscp ezqos-dscp-classifier forwarding-class ezqos-control-fc loss-priority low code-points 011010
+          - set groups ezqos-voip class-of-service classifiers dscp ezqos-dscp-classifier forwarding-class ezqos-control-fc loss-priority low code-points 111000
+          - set groups ezqos-voip class-of-service classifiers dscp ezqos-dscp-classifier forwarding-class ezqos-video-fc loss-priority low code-points 100010
+          - set groups ezqos-voip class-of-service forwarding-classes class ezqos-best-effort queue-num 0
+          - set groups ezqos-voip class-of-service forwarding-classes class ezqos-video-fc queue-num 4
+          - set groups ezqos-voip class-of-service forwarding-classes class ezqos-voice-fc queue-num 5
+          - set groups ezqos-voip class-of-service forwarding-classes class ezqos-control-fc queue-num 7
+          - set groups ezqos-voip class-of-service scheduler-maps ezqos-voip-sched-maps forwarding-class ezqos-voice-fc scheduler ezqos-voice-scheduler
+          - set groups ezqos-voip class-of-service scheduler-maps ezqos-voip-sched-maps forwarding-class ezqos-control-fc scheduler ezqos-control-scheduler
+          - set groups ezqos-voip class-of-service scheduler-maps ezqos-voip-sched-maps forwarding-class ezqos-video-fc scheduler ezqos-video-scheduler
+          - set groups ezqos-voip class-of-service scheduler-maps ezqos-voip-sched-maps forwarding-class ezqos-best-effort scheduler ezqos-data-scheduler
+          - set groups ezqos-voip class-of-service schedulers ezqos-voice-scheduler buffer-size percent 20
+          - set groups ezqos-voip class-of-service schedulers ezqos-voice-scheduler priority strict-high
+          - set groups ezqos-voip class-of-service schedulers ezqos-control-scheduler buffer-size percent 10
+          - set groups ezqos-voip class-of-service schedulers ezqos-control-scheduler priority strict-high
+          - set groups ezqos-voip class-of-service schedulers ezqos-video-scheduler transmit-rate percent 70
+          - set groups ezqos-voip class-of-service schedulers ezqos-video-scheduler buffer-size percent 20
+          - set groups ezqos-voip class-of-service schedulers ezqos-video-scheduler priority low
+          - set groups ezqos-voip class-of-service schedulers ezqos-data-scheduler transmit-rate percent 30
+          - set groups ezqos-voip class-of-service schedulers ezqos-data-scheduler buffer-size percent 50
+          - set groups ezqos-voip class-of-service schedulers ezqos-data-scheduler priority low
+          - set apply-groups ezqos-voip
+        comment: Set EZQOS settings
+        provider: "{{ netconf }}"

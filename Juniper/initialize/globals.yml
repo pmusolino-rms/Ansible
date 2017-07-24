@@ -1,0 +1,38 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: nj_junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: Change poe config
+      junos_config:
+        lines:
+          - set poe interface all
+        comment: Set POE on all interfaces
+        provider: "{{ netconf }}"
+
+    - name: Change LLDP Global interface settings
+      junos_config:
+        lines:
+          - set protocols lldp interface all
+          - set protocols lldp-med interface all
+        comment: Update LLDP Settings
+        provider: "{{ netconf }}"
+
+    - name: Change Storm Control settings
+      junos_config:
+        lines:
+          - set forwarding-options storm-control-profiles default all
+        comment: Update Storm Control settings
+        provider: "{{ netconf }}"

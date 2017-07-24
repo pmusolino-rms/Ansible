@@ -1,0 +1,57 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: nj_junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: Change snmp information
+      junos_config:
+        lines:
+          - set snmp name {{ inventory_hostname }} 
+          - set snmp location "{{ snmp_location }}"
+          - set snmp contact "{{ snmp_contact }}" 
+          - set snmp interface me0.0
+        comment: Update snmp information
+        provider: "{{ netconf }}"
+
+    - name: Change SNMP Clients
+      junos_config:
+        lines:
+          - set snmp client-list {{ snmp_community1 }} {{ snmp_client1 }}
+          - set snmp client-list {{ snmp_community1 }} {{ snmp_client2 }}
+          - set snmp client-list {{ snmp_community1 }} {{ snmp_client3 }}
+          - set snmp client-list {{ snmp_community1 }} {{ snmp_client4 }}
+          - set snmp client-list {{ snmp_community1 }} {{ snmp_client5 }}
+          - set snmp client-list {{ snmp_community1 }} {{ snmp_client6 }}
+          - set snmp client-list {{ snmp_community1 }} {{ snmp_client7 }}
+        comment: Update SNMP clients
+        provider: "{{ netconf }}"
+
+    - name: Change SNMP Trap settings
+      junos_config:
+        lines:
+          - set snmp trap-group {{ snmp_community1 }} targets {{ snmp_trap1 }} 
+          - set snmp trap-group {{ snmp_community1 }} targets {{ snmp_trap2 }} 
+          - set snmp trap-group {{ snmp_community1 }} targets {{ snmp_trap3 }} 
+          - set snmp trap-group {{ snmp_community1 }} targets {{ snmp_trap4 }} 
+        comment: Update SNMP Trap settings
+        provider: "{{ netconf }}"
+
+    - name: Change SNMP Community
+      junos_config:
+        lines:
+          - set snmp community {{ snmp_community1 }} authorization read-only
+          - set snmp community {{ snmp_community1 }} client-list-name {{ snmp_community1 }}
+        comment: Update SNMP Community  settings
+        provider: "{{ netconf }}"

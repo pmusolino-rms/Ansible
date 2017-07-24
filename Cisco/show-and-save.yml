@@ -1,0 +1,40 @@
+---
+- name: RUN COMMAND AND SAVE
+  hosts: ios
+  connection: local
+  gather_facts: no
+
+
+  vars:
+    command_list:
+      - show running-config
+      - show inventory
+    #  - show environment all
+      - show version
+    #  - show cdp neighbors detail
+    #  - show clock
+    #  - show users
+    #  - show boot
+    #  - show int status | inc connected
+    #  - show arp
+    #  - show ip interface brief | exc admin
+
+  tasks:
+    - name: RUN COMMANDS
+      ios_command:
+        provider: "{{ creds }}"
+        #authorize: yes
+        commands: "{{ command_list }}"
+      register: test_env
+
+    - name: "REMOVE SPECIAL CHARACTER FOR COMMANDS AND SAVE CONFIG"
+      template:
+        src: "output.j2"
+        dest: "output/{{ inventory_hostname }}_{{ item.1 | replace(' | json', '') | replace(' ', '_') | replace('|', '_') }}.txt"
+      with_indexed_items: "{{ command_list }}"
+
+    - name: SHOW CONFIG AS WELL
+      debug:
+        #var: "test_env.stdout_lines[item.0]"
+        var: "test_env"
+      with_indexed_items: "{{ command_list }}"

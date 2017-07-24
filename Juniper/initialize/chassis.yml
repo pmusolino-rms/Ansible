@@ -1,0 +1,35 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: nj_junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: Change Chassis settings
+      junos_config:
+        lines:
+          - set chassis redundancy graceful-switchover
+          - set chassis aggregated-devices ethernet device-count 16
+          - set chassis traceoptions flag all
+        comment: Update chassis settings
+        provider: "{{ netconf }}"
+
+    - name: Change Virtual Chassis settings
+      junos_config:
+        lines:
+          - set virtual-chassis traceoptions file virtual-chassis
+          - set virtual-chassis traceoptions file world-readable
+          - set virtual-chassis traceoptions flag all
+          - set virtual-chassis member 1 mastership-priority 255
+          - set virtual-chassis member 0 mastership-priority 255
+        comment: Update Virtual chassis settings
+        provider: "{{ netconf }}"

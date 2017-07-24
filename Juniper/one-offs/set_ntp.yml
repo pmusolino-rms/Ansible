@@ -1,0 +1,22 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: nj_junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+    - name: JUNIPER CONNECTION TEST
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: SET/STANDARDIZE NTP
+      junos_config:
+        lines:
+          - set system ntp server {{ ntp1 }}
+          - set system ntp server {{ ntp2 }}
+        comment: Set NTP servers
+        provider: "{{ netconf }}"
