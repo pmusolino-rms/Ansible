@@ -1,0 +1,24 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: nj_junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: JUNIPER CONNECTION TEST
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: DELETE DEFAULT VLAN FROM INTERFACE
+      junos_config:
+        lines:
+          - delete interfaces ge-0/0/{{ item }} unit 0 family ethernet-switching vlan members default
+        comment: Deleting default interface
+        provider: "{{ netconf }}"
+      with_sequence:  start=3 end=47
