@@ -23,6 +23,14 @@
         comment: Update chassis settings
         provider: "{{ netconf }}"
 
+    - name: Remove autoimage upgrade settings
+      junos_config:
+        lines:
+          - delete chassis auto-image-upgrade
+
+        comment: remove autoupdate settings
+        provider: "{{ netconf }}"
+
     - name: Change Virtual Chassis settings
       junos_config:
         lines:

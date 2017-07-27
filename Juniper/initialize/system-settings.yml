@@ -17,9 +17,17 @@
     - name: Change hostname/domain-name
       junos_config:
         lines:
-          - set system host-name nj-edge-sw01
-          - set system domain-name rms.com
-        comment: Update hostname settings
+          - set system host-name {{ inventory_hostname }}
+          - set system domain-name {{ domain_name }}
+        comment: Set Host-name
+        provider: "{{ netconf }}"
+
+    - name: Set Authentication Order
+      junos_config:
+        lines:
+          - set system authentication-order password
+          - set system authentication-order radius
+        comment: Update authentication order
         provider: "{{ netconf }}"
 
     - name: Change DNS
@@ -35,10 +43,11 @@
         lines:
           - set system ntp server {{ ntp1 }}
           - set system ntp server {{ ntp2 }}
+          - set system ntp source-address {{ ansible_ssh_host }}
         comment: Update NTP settings
         provider: "{{ netconf }}"
 
-    - name: Change Radius
+    - name: Change System Radius
       junos_config:
         lines:
           - set system radius-server {{ radius1 }} secret {{ radius_key }}
@@ -55,6 +64,7 @@
         lines:
           - set system login user RO class read-only
           - set system login user SU class super-user
+          - set system login user remote class read-only
         comment: Update user settings
         provider: "{{ netconf }}"
 

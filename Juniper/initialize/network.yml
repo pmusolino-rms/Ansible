@@ -1,0 +1,33 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: nj_junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: NETWORK INTERFACE SETTINGS
+      junos_config:
+        lines:
+          - set interfaces vme unit 0 family inet address {{ ansible_ssh_host }}/{{ mgmt_netmask }}
+          - delete interfaces vme unit 0 family inet dhcp
+          - delete interfaces me0
+        comment: Set Network Inferface settings
+        provider: "{{ netconf }}"
+
+    - name: NETWORK ROUTE SETTINGS
+      junos_config:
+        lines:
+          - set routing-options static route 0.0.0.0/0 next-hop {{ mgmt_default_gw }}
+          - set routing-options static route 0.0.0.0/0 no-readvertise
+        comment: Set Network Route settings
+        provider: "{{ netconf }}"

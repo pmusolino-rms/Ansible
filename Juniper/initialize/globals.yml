@@ -30,9 +30,17 @@
         comment: Update LLDP Settings
         provider: "{{ netconf }}"
 
+    - name: Set IGMP Snooping Protocol
+      junos_config:
+        lines:
+          - set protocols igmp-snooping vlan all
+        comment: Update IGMP Protocol Settings
+        provider: "{{ netconf }}"
+
     - name: Change Storm Control settings
       junos_config:
         lines:
           - set forwarding-options storm-control-profiles default all
         comment: Update Storm Control settings
         provider: "{{ netconf }}"
+

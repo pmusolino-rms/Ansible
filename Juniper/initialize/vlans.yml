@@ -32,11 +32,11 @@
       register: result
 
     - name: output to file
-      copy: content="{{ result.stdout[0] }}" dest=/tmp/fpc.txt
+      copy: content="{{ result.stdout[0] }}" dest=/tmp/fpc_{{ inventory_hostname }}.txt
 
     - name: SET VARIABLE FPC
       set_fact:
-        chassis_fpc="{{ lookup('xmlfile', 'file=/tmp/fpc.txt xpath=.//chassis[name="Chassis"]/chassis-module/name') | replace("\n","") }}"
+        chassis_fpc="{{ lookup('xmlfile', 'file=/tmp/fpc_{{ inventory_hostname }}.txt xpath=.//chassis[name="Chassis"]/chassis-module/name') | replace("\n","") }}"
 
     - name: Assign User port range 
       junos_config:
@@ -56,3 +56,12 @@
         provider: "{{ netconf }}"
       with_items: "{{ vlans }}"
       when: item.user == True
+
+    - name: Assign VOIP Ports
+      junos_config:
+        lines:
+          - set switch-options voip interface access-ports vlan {{ voice_vlan }}
+          - set switch-options voip interface USER-PORTS vlan {{ voice_vlan }}
+        comment: Set Voip vlans on user/access ports
+        provider: "{{ netconf }}"
+ 

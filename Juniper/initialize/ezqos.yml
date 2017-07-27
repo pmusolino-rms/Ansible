@@ -10,6 +10,7 @@
           password: "{{ ansible_ssh_pass }}"
           port: "{{ port }}"
           transport: netconf
+          timeout: 30
     - name: Juniper connection test
       wait_for: host={{ inventory_hostname }} port={{ port }}
 
