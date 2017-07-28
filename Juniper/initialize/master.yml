@@ -1,0 +1,10 @@
+---
+- name: TOP LEVEL
+
+- include: system-settings.yml
+- include: chassis.yml
+- include: network.yml
+- include: globals.yml
+- include: radius.yml
+- include: snmp.yml
+- include: vlans.yml
