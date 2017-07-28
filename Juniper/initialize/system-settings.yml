@@ -47,18 +47,6 @@
         comment: Update NTP settings
         provider: "{{ netconf }}"
 
-    - name: Change System Radius
-      junos_config:
-        lines:
-          - set system radius-server {{ radius1 }} secret {{ radius_key }}
-          #- set system radius-server {{ radius1 }} source {{ ansible_ssh_host }}
-          - set system radius-server {{ radius2 }} secret {{ radius_key }}
-          #- set system radius-server {{ radius2 }} source {{ ansible_ssh_host }}
-          - set system radius-server {{ radius3 }} secret {{ radius_key }}
-          #- set system radius-server {{ radius3 }} source {{ ansible_ssh_host }}
-        comment: Update Radius settings
-        provider: "{{ netconf }}"
-
     - name: Change User classes
       junos_config:
         lines:
