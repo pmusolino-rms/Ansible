@@ -1,0 +1,55 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: test-sw01
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: Change System Radius
+      junos_config:
+        lines:
+          - set system radius-server {{ radius1 }} secret {{ radius_key }}
+          - set system radius-server {{ radius2 }} secret {{ radius_key }}          
+          - set system radius-server {{ radius3 }} secret {{ radius_key }}
+          - set system radius-server {{ radius1 }} source-address {{ ansible_ssh_host }}
+          - set system radius-server {{ radius2 }} source-address {{ ansible_ssh_host }}
+          - set system radius-server {{ radius3 }} source-address {{ ansible_ssh_host }}
+        comment: Update Radius System settings
+        provider: "{{ netconf }}"
+
+    - name: 802.1x Radius
+      junos_config:
+        lines:
+          - set access radius-server {{ radius1 }} secret {{ radius_key }}
+          - set access radius-server {{ radius2 }} secret {{ radius_key }}
+          - set access radius-server {{ radius3 }} secret {{ radius_key }}
+          - set access radius-server {{ radius1 }} source-address {{ ansible_ssh_host }}
+          - set access radius-server {{ radius2 }} source-address {{ ansible_ssh_host }}
+          - set access radius-server {{ radius3 }} source-address {{ ansible_ssh_host }}
+        comment: Update access Radius settings
+        provider: "{{ netconf }}"
+
+    - name: Set RAD-AUTH Profile
+      junos_config:
+        lines:
+          - set access profile RAD-AUTH authentication-order radius
+          - set access profile RAD-AUTH radius authentication-server {{ radius1 }}
+          - set access profile RAD-AUTH radius authentication-server {{ radius2 }}
+          - set access profile RAD-AUTH radius authentication-server {{ radius3 }}
+          - set access profile RAD-AUTH accounting order radius
+          - set access profile RAD-AUTH accounting accounting-stop-on-failure
+          - set access profile RAD-AUTH accounting accounting-stop-on-access-deny
+        comment: Set RAD-AUTH profile
+        provider: "{{ netconf }}"
+
+

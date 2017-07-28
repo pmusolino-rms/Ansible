@@ -11,6 +11,7 @@
           port: "{{ port }}"
           transport: netconf
           timeout: 30
+          
     - name: Juniper connection test
       wait_for: host={{ inventory_hostname }} port={{ port }}
 
@@ -38,17 +39,6 @@
       with_items: "{{ chassis_fpc.split(',') }}"
       when: item | search("FPC")
 
-    - name: 802.1x Radius
-      junos_config:
-        lines:
-          - set access radius-server {{ radius1 }} secret {{ radius_key }}
-          #- set access radius-server {{ radius1 }} source {{ ansible_ssh_host }}
-          - set access radius-server {{ radius2 }} secret {{ radius_key }}
-          #- set access radius-server {{ radius2 }} source {{ ansible_ssh_host }}
-          - set access radius-server {{ radius3 }} secret {{ radius_key }}
-          #- set access radius-server {{ radius3 }} source {{ ansible_ssh_host }}
-        comment: Update access Radius settings
-        provider: "{{ netconf }}"
 
     - name: Assign Vlans to 802.1x ports
       junos_config:
@@ -59,15 +49,6 @@
         provider: "{{ netconf }}"
       with_items: "{{ vlans }}"
       when: item.user == True
-
-    - name: Set RAD-AUTH Profile
-      junos_config:
-        lines:
-          - set access profile RAD-AUTH authentication-order radius
-          - set access profile RAD-AUTH radius authentication-server {{ radius1 }}
-          - set access profile RAD-AUTH radius authentication-server {{ radius2 }}
-        comment: Set RAD-AUTH profile
-        provider: "{{ netconf }}"
 
     - name: Set protocols
       junos_config:
