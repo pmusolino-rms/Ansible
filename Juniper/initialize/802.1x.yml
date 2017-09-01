@@ -1,5 +1,5 @@
 ---
-- name: CONFIGURE JUNIPER EX
+- name: CONFIGURE 802.1X
   hosts: test-sw01
   tasks:
     - name: DEFINE PROVIDER
@@ -11,7 +11,7 @@
           port: "{{ port }}"
           transport: netconf
           timeout: 30
-          
+
     - name: Juniper connection test
       wait_for: host={{ inventory_hostname }} port={{ port }}
 

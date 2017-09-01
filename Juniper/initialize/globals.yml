@@ -1,5 +1,5 @@
 ---
-- name: CONFIGURE JUNIPER EX
+- name: CONFIGURE GLOBALS
   hosts: nj_junos_ex
   tasks:
     - name: DEFINE PROVIDER

@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE JUNIPER EX
-  hosts: test-sw01
+  hosts: nj_junos_ex
   tasks:
     - name: DEFINE PROVIDER
       set_fact:

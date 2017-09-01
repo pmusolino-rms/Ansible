@@ -1,6 +1,6 @@
 ---
-- name: CONFIGURE NETWORK
-  hosts: nj_junos_ex
+- name: CONFIGURE UPLINKS
+  hosts: test-sw01
   tasks:
     - name: DEFINE PROVIDER
       set_fact:
@@ -15,19 +15,18 @@
     - name: Juniper connection test
       wait_for: host={{ inventory_hostname }} port={{ port }}
 
-    - name: NETWORK INTERFACE SETTINGS
+    - name: NETWORK INTERFACE TRUNK SETTINGS
       junos_config:
         lines:
-          - set interfaces vme unit 0 family inet address {{ ansible_ssh_host }}/{{ mgmt_netmask }}
-          - delete interfaces vme unit 0 family inet dhcp
-          - delete interfaces me0
-        comment: Set Network Inferface settings
+          # FOR LOOP WITH VLANS to set member names
+          - set interfaces ge-0/0/0 unit 0 family ethernet-switching interface-mode trunk
+          - set interfaces ge-0/0/0 unit 0 family ethernet-switching vlan members all
+        comment: Set Network Inferface Trunk settings
         provider: "{{ netconf }}"
 
     - name: NETWORK ROUTE SETTINGS
       junos_config:
         lines:
-          - set routing-options static route 0.0.0.0/0 next-hop {{ mgmt_default_gw }}
-          - set routing-options static route 0.0.0.0/0 no-readvertise
+
         comment: Set Network Route settings
         provider: "{{ netconf }}"
