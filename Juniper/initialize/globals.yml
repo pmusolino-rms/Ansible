@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE GLOBALS
-  hosts: nj_junos_ex
+  hosts: category1
   tasks:
     - name: DEFINE PROVIDER
       set_fact:
@@ -19,6 +19,7 @@
       junos_config:
         lines:
           - set poe interface all
+          - set poe interface all maximum-power 15
         comment: Set POE on all interfaces
         provider: "{{ netconf }}"
 

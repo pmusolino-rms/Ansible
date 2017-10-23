@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE VLANS
-  hosts: nj_junos_ex
+  hosts: category1
   tasks:
     - name: DEFINE PROVIDER
       set_fact:
@@ -22,7 +22,7 @@
         comment: Set Vlans
         provider: "{{ netconf }}"
       with_items: "{{ vlans }}"
-
+    
     - name: Get fpc numbers
       junos_command:
         commands:
@@ -41,7 +41,9 @@
     - name: Assign User port range 
       junos_config:
         lines:
-          - set interfaces interface-range USER-PORTS member-range ge-{{ item[4:] }}/0/3 to ge-{{ item[4:] }}/0/47
+          - set interfaces interface-range USER-PORTS member-range ge-{{ item[4:] }}/0/4 to ge-{{ item[4:] }}/0/43
+          - set interfaces interface-range WIFI-PORTS member-range ge-{{ item[4:] }}/0/44 to ge-{{ item[4:] }}/0/45
+          - set interfaces interface-range VC-PORTS member-range ge-{{ item[4:] }}/0/46 to ge-{{ item[4:] }}/0/47
         comment: Set User Port ranges
         provider: "{{ netconf }}"
       with_items: "{{ chassis_fpc.split(',') }}"
@@ -50,12 +52,32 @@
     - name: Assign Vlans to Ports
       junos_config:
         lines:
+          - set interfaces interface-range USER-PORTS unit 0 family ethernet-switching
           - set interfaces interface-range USER-PORTS unit 0 family ethernet-switching interface-mode access
+          - set interfaces interface-range USER-PORTS unit 0 family ethernet-switching storm-control default
           - set interfaces interface-range USER-PORTS unit 0 family ethernet-switching vlan members {{ item.name }}
         comment: Set Vlans
         provider: "{{ netconf }}"
       with_items: "{{ vlans }}"
       when: item.user == True
+
+    - name: Assign Wifi Vlans to Ports
+      junos_config:
+        lines:
+          - set interfaces interface-range WIFI-PORTS native-vlan-id 12
+          - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching interface-mode trunk
+          - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching vlan members WIFI
+          - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching vlan members WIFI-GUEST
+        comment: Set Vlans
+        provider: "{{ netconf }}"
+
+    - name: Assign Video-Conference Vlans to Ports
+      junos_config:
+        lines:
+          - set interfaces interface-range VC-PORTS unit 0 family ethernet-switching interface-mode access
+          - set interfaces interface-range VC-PORTS unit 0 family ethernet-switching vlan members VIDEO
+        comment: Set Vlans
+        provider: "{{ netconf }}"
 
     - name: Assign VOIP Ports
       junos_config:
@@ -63,5 +85,12 @@
           - set switch-options voip interface access-ports vlan {{ voice_vlan }}
           - set switch-options voip interface USER-PORTS vlan {{ voice_vlan }}
         comment: Set Voip vlans on user/access ports
+        provider: "{{ netconf }}"
+ 
+    - name: Delete IRB DHCP 
+      junos_config:
+        lines:
+          - delete interfaces irb unit 0 family inet dhcp
+        comment: Delete IRB interface DHCP
         provider: "{{ netconf }}"
  

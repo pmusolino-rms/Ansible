@@ -1,0 +1,21 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: category2
+  tasks:
+      - name: DEFINE PROVIDER
+        set_fact:
+            netconf:
+                host: "{{ ansible_ssh_host }}"
+                username: "{{ ansible_ssh_user }}"
+                password: "{{ ansible_ssh_pass }}"
+                port: "{{ port }}"
+                transport: netconf
+                timeout: 30
+
+      - name: JUNIPER CONNECTION TEST
+        wait_for: host={{ inventory_hostname }} port={{ port }}
+
+      - name: Upgrade to version jinstall-ex-4300-14.1X53-D42.3-domestic-signed.tgz
+        junos_package:
+            src: "/var/tmp/jinstall-ex-4300-14.1X53-D42.3-domestic-signed.tgz"
+            provider: "{{ netconf }}"

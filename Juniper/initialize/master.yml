@@ -1,6 +1,6 @@
 ---
 - name: TOP LEVEL
-  hosts: nj_junos_ex
+  hosts: category1
 
 - include: system-settings.yml
 - include: chassis.yml

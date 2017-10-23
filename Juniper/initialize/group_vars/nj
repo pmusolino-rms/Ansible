@@ -1,0 +1,28 @@
+---
+ntp1: 1.2.3.4
+ntp2: 5.6.7.8
+dns1: 1.2.3.4
+dns2: 2.3.4.5
+radius1: 1.2.3.100
+radius2: 1.2.3.200
+radius3: 1.2.3.300
+radius_key: someradiuskey
+syslog1: 1.2.3.4
+syslog2: 4.5.6.7
+snmp_location: Someplace, Somewhere
+snmp_contact: networking@example.com
+snmp_community1: somestrings
+snmp_client1: 10.12.23.14/32
+snmp_client2: 10.12.23.15/32
+snmp_client3: 10.12.23.16/32
+snmp_client4: 10.12.23.17/32
+snmp_client5: 10.12.23.18/32
+snmp_client6: 10.12.23.19/32
+snmp_client7: 10.12.23.20/32
+snmp_trap1: 1.2.3.4
+snmp_trap2: 2.3.4.5
+snmp_trap3: 3.4.5.6
+snmp_trap4: 6.7.8.9
+guest_vlan: 999
+mgmt_default_gw: 10.10.10.1
+mgmt_netmask: 24

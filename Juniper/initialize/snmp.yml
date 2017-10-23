@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE SNMP
-  hosts: nj_junos_ex
+  hosts: category1
   tasks:
     - name: DEFINE PROVIDER
       set_fact:
@@ -21,7 +21,7 @@
           - set snmp name {{ inventory_hostname }} 
           - set snmp location "{{ snmp_location }}"
           - set snmp contact "{{ snmp_contact }}" 
-          - set snmp interface me0.0
+          - set snmp interface vme.0
         comment: Update snmp information
         provider: "{{ netconf }}"
 

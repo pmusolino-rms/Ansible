@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE NETWORK
-  hosts: nj_junos_ex
+  hosts: category1
   tasks:
     - name: DEFINE PROVIDER
       set_fact:

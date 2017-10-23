@@ -1,0 +1,36 @@
+---
+- name: DEFINE SPANNING TREE
+  hosts: category1
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: DISABLE RSTP
+      junos_config:
+        lines:
+          - set protocols rstp disable
+        comment: Globally Disable rstp
+        provider: "{{ netconf }}"
+
+    - name: ENABLE VSTP PER EACH VLAN
+      junos_config:
+        lines:
+          - set protocols vstp vlan {{ item.vlanid }} bridge-priority 60k
+          - set protocols vstp vlan {{ item.vlanid }} interface {{ item.port }} edge
+          - set protocols vstp vlan {{ item.vlanid }} interface {{ item.port }} no-root-port
+          - set protocols vstp vlan {{ item.vlanid }} interface ae0
+          - set protocols vstp vlan {{ item.vlanid }} interface ae1
+        comment: Set Network Route settings
+        provider: "{{ netconf }}"
+      with_items: "{{ vlans }}"
+      when: item.port != 'NONE'

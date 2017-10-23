@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE 802.1X
-  hosts: test-sw01
+  hosts: category1
   tasks:
     - name: DEFINE PROVIDER
       set_fact:
