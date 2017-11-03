@@ -16,10 +16,9 @@
       wait_for: host={{ inventory_hostname }} port={{ port }}
 
     - name: Define Vlans
-      junos_config:
-        lines:
-          - set vlans {{ item.name }} vlan-id {{ item.vlanid }}
-        comment: Set Vlans
+      junos_vlan:
+        name: "{{ item.name }}"
+        vlan_id: "{{ item.vlanid }}"
         provider: "{{ netconf }}"
       with_items: "{{ vlans }}"
     
