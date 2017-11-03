@@ -64,7 +64,7 @@
     - name: Assign Wifi Vlans to Ports
       junos_config:
         lines:
-          - set interfaces interface-range WIFI-PORTS native-vlan-id 24
+          - set interfaces interface-range WIFI-PORTS native-vlan-id {{ wifi_vlan }}
           - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching interface-mode trunk
           - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching vlan members WIFI
           - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching vlan members WIFI-GUEST
