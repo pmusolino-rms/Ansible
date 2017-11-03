@@ -1,11 +1,13 @@
 ---
 - name: TOP LEVEL
-  hosts: category1
+  hosts: group1
 
 - include: system-settings.yml
 - include: chassis.yml
 - include: network.yml
 - include: globals.yml
+- include: ezqos.yml
 - include: radius.yml
 - include: snmp.yml
 - include: vlans.yml
+- include: spanning-tree.yml

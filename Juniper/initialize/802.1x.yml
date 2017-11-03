@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE 802.1X
-  hosts: category1
+  hosts: group1
   tasks:
     - name: DEFINE PROVIDER
       set_fact:

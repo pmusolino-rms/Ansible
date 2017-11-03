@@ -3,7 +3,6 @@ localhost	ansible_connection=local
 [category2]
 switch ansible_connection=local ansible_ssh_host=10.1.2.3 ansible_ssh_port=830
 [category3]
-[uk_nxos]
 [group1:children]
 category1
 category2

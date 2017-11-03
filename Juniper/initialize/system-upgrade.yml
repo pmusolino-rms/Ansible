@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE JUNIPER EX
-  hosts: category2
+  hosts: group1
   tasks:
       - name: DEFINE PROVIDER
         set_fact:

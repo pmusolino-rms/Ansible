@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE JUNIPER EX
-  hosts: category1
+  hosts: group1
   tasks:
     - name: DEFINE PROVIDER
       set_fact:
@@ -15,14 +15,66 @@
     - name: JUNIPER CONNECTION TEST
       wait_for: host={{ inventory_hostname }} port={{ port }}
 
-    - name: DELETE DEFAULT VLAN FROM INTERFACE
+    - name: DELETE DEFAULT SEQUENTIAL INTERFACES
       junos_config:
         lines:
-          - delete interfaces ge-0/0/{{ item }} unit 0 family ethernet-switching vlan members default
-          - delete interfaces ge-0/0/{{ item }} unit 0 family ethernet-switching storm-control default
-          - delete interfaces ge-0/0/{{ item }} unit 0 family ethernet-switching
-          - delete interfaces ge-0/0/{{ item }} unit 0 
-          - delete protocols rstp interface ge-0/0/{{ item }}
+          - delete interfaces ge-0/0/4
+          - delete interfaces ge-0/0/5
+          - delete interfaces ge-0/0/6
+          - delete interfaces ge-0/0/7
+          - delete interfaces ge-0/0/8
+          - delete interfaces ge-0/0/9
+          - delete interfaces ge-0/0/10
+          - delete interfaces ge-0/0/11
+          - delete interfaces ge-0/0/12
+          - delete interfaces ge-0/0/13
+          - delete interfaces ge-0/0/14
+          - delete interfaces ge-0/0/15
+          - delete interfaces ge-0/0/16
+          - delete interfaces ge-0/0/17
+          - delete interfaces ge-0/0/18
+          - delete interfaces ge-0/0/19
+          - delete interfaces ge-0/0/20
+          - delete interfaces ge-0/0/21
+          - delete interfaces ge-0/0/22
+          - delete interfaces ge-0/0/23
+          - delete interfaces ge-0/0/24
+          - delete interfaces ge-0/0/25
+          - delete interfaces ge-0/0/26
+          - delete interfaces ge-0/0/27
+          - delete interfaces ge-0/0/28
+          - delete interfaces ge-0/0/29
+          - delete interfaces ge-0/0/30
+          - delete interfaces ge-0/0/31
+          - delete interfaces ge-0/0/32
+          - delete interfaces ge-0/0/33
+          - delete interfaces ge-0/0/34
+          - delete interfaces ge-0/0/35
+          - delete interfaces ge-0/0/36
+          - delete interfaces ge-0/0/37
+          - delete interfaces ge-0/0/38
+          - delete interfaces ge-0/0/39
+          - delete interfaces ge-0/0/40
+          - delete interfaces ge-0/0/41
+          - delete interfaces ge-0/0/42
+          - delete interfaces ge-0/0/43
+          - delete interfaces ge-0/0/44
+          - delete interfaces ge-0/0/45
+          - delete interfaces ge-0/0/46
+          - delete interfaces ge-0/0/47
         comment: Deleting default interface
         provider: "{{ netconf }}"
-      with_sequence:  start=3 end=47
+
+    - name: DELETE DEFAULT INTERFACE CONFIGS 
+      junos_config:
+        lines:
+          - delete interfaces ge-0/2/0
+          - delete interfaces ge-0/2/1
+          - delete interfaces ge-0/2/2
+          - delete interfaces ge-0/2/3
+          - delete interfaces xe-0/2/0
+          - delete interfaces ge-0/2/1
+          - delete interfaces ge-0/2/2
+          - delete interfaces ge-0/2/3
+        comment: Deleting default interface
+        provider: "{{ netconf }}"

@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE CHASSIS
-  hosts: category1
+  hosts: group1
   tasks:
     - name: DEFINE PROVIDER
       set_fact:

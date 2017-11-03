@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE VLANS
-  hosts: category1
+  hosts: group1
   tasks:
     - name: DEFINE PROVIDER
       set_fact:
@@ -64,7 +64,7 @@
     - name: Assign Wifi Vlans to Ports
       junos_config:
         lines:
-          - set interfaces interface-range WIFI-PORTS native-vlan-id 12
+          - set interfaces interface-range WIFI-PORTS native-vlan-id 24
           - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching interface-mode trunk
           - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching vlan members WIFI
           - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching vlan members WIFI-GUEST
