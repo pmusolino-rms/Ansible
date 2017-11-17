@@ -35,7 +35,7 @@
       junos_config:
         lines:
           - delete protocols igmp-snooping vlan all
-          - set protocols igmp-snooping vlan defaiult
+          - set protocols igmp-snooping vlan default
         comment: Update IGMP Protocol Settings
         provider: "{{ netconf }}"
 
