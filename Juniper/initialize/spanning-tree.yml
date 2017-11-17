@@ -31,7 +31,16 @@
           - set protocols vstp vlan {{ item.vlanid }} interface {{ item.port }} no-root-port
           - set protocols vstp vlan {{ item.vlanid }} interface ae0
           - set protocols vstp vlan {{ item.vlanid }} interface ae1
-        comment: Set Network Route settings
+        comment: Set VSTP on all vlans with interfaces
         provider: "{{ netconf }}"
       with_items: "{{ vlans }}"
       when: item.port != 'NONE'
+
+    - name: ENABLE VSTP For Guest VLAN
+      junos_config:
+        lines:
+          - set protocols vstp vlan {{ guest_vlan }} bridge-priority 60k
+          - set protocols vstp vlan {{ guest_vlan }} interface ae0
+          - set protocols vstp vlan {{ guest_vlan }} interface ae1
+        comment: Enable VSTP on Guest VLAN
+        provider: "{{ netconf }}"

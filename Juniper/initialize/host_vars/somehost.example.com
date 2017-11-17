@@ -11,3 +11,4 @@ vlans:
   - { name: VIDEO, vlanid: 14, user: False, port: VC-PORTS }
   - { name: GUEST, vlanid: 999, user: False, port: NONE }
 voice_vlan: 10
+guest_vlan: 999
