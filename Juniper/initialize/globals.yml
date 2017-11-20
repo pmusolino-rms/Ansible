@@ -18,6 +18,7 @@
     - name: Change poe config
       junos_config:
         lines:
+          - set poe management static
           - set poe interface all
           - set poe interface all maximum-power 15
         comment: Set POE on all interfaces
