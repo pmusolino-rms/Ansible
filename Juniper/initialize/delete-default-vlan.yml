@@ -15,6 +15,13 @@
     - name: JUNIPER CONNECTION TEST
       wait_for: host={{ inventory_hostname }} port={{ port }}
 
+    - name DELETE DEFAULT SEQUENTIAL INTERFACES NETL2
+      net_l2_interface:
+        aggregate:
+          - name: ge-0/0/4
+          - name: ge-0/0/5
+        state: absent
+
     - name: DELETE DEFAULT SEQUENTIAL INTERFACES
       junos_config:
         lines:
