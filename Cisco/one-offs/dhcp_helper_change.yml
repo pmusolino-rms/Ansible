@@ -1,0 +1,60 @@
+---
+# Add oldhelper and new helper to vars files or seciton
+# This is an ineffcient run due to multiple show run interface
+# Better would be to do one show run and parse
+- name: Change  DHCP Helper
+  hosts: some_group
+  gather_facts: false
+  vars:
+    vlan_interfaces: []
+    vlan_helpers: {}
+  tasks:
+    - name: GET CONFIG
+      ios_command:
+        commands: "show interface | i Vlan" 
+      register: interfaces
+
+    - name: SET FACT FOR VLAN INTERFACES LIST
+      set_fact:
+        vlan_interfaces: "{{ vlan_interfaces + [item.split()[0]] }}"
+      with_items: "{{ interfaces.stdout_lines }}"
+      no_log: True
+
+#    - name: Debug
+#      debug: 
+#        msg: "{{ vlan_interfaces }}"     
+
+    - name: SHOW INTERFACES WITH HELPER ADDRESS
+      ios_command:
+        commands: "show run interface {{ item }} | include helper-address {{ oldhelper }}"
+      register: helpers
+      with_items: "{{ vlan_interfaces }}"
+
+#    - name: Debug
+#      debug:
+#        msg: "{{ helpers }}"
+
+    - name: SET FACT FOR HELPERS
+      set_fact:
+        vlan_helpers: "{{ vlan_helpers | combine({item.item: item.stdout_lines}) }}"
+      with_items: "{{ helpers.results}}"
+      when: item.stdout.0 != ""
+      no_log: True
+
+#    - name: Debug
+#      debug:
+#        msg: "{{ vlan_helpers }}"
+
+    - name: CHANGE HELPER ADDRESS
+      ios_config:
+        lines:
+          - no ip helper-address {{ oldhelper }}
+          - ip helper-address {{ newhelper }}
+        parents: "interface {{ item.key }}"
+      with_dict: "{{ vlan_helpers }}"
+      check_mode: no       
+
+    - name: COPY RUN START
+      ios_config:
+        save_when: modified
+
