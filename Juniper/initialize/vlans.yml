@@ -55,6 +55,7 @@
           - set interfaces interface-range USER-PORTS unit 0 family ethernet-switching interface-mode access
           - set interfaces interface-range USER-PORTS unit 0 family ethernet-switching storm-control default
           - set interfaces interface-range USER-PORTS unit 0 family ethernet-switching vlan members {{ item.name }}
+          - set interfaces interface-range USER-PORTS description user-ports
         comment: Set Vlans
         provider: "{{ netconf }}"
       with_items: "{{ vlans }}"
@@ -67,6 +68,7 @@
           - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching interface-mode trunk
           - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching vlan members WIFI
           - set interfaces interface-range WIFI-PORTS unit 0 family ethernet-switching vlan members WIFI-GUEST
+          - set interfaces interface-range WIFI-PORTS description wifi-ports
         comment: Set Vlans
         provider: "{{ netconf }}"
 
@@ -75,6 +77,7 @@
         lines:
           - set interfaces interface-range VC-PORTS unit 0 family ethernet-switching interface-mode access
           - set interfaces interface-range VC-PORTS unit 0 family ethernet-switching vlan members VIDEO
+          - set interfaces interface-range VC-PORTS description vc-ports
         comment: Set Vlans
         provider: "{{ netconf }}"
 

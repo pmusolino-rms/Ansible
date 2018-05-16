@@ -1,6 +1,6 @@
 ---
 - name: CONFIGURE UPLINKS
-  hosts: group1
+  hosts: group1 
   tasks:
     - name: DEFINE PROVIDER
       set_fact:
@@ -34,7 +34,9 @@
       junos_config:
         lines:
           - set interfaces ge-{{ item[4:] }}/0/0 ether-options 802.3ad ae0
+          - set interfaces ge-{{ item[4:] }}/0/0 description "uplink to core1"
           - set interfaces ge-{{ item[4:] }}/0/2 ether-options 802.3ad ae1
+          - set interfaces ge-{{ item[4:] }}/0/2 description "uplink to core2"
         comment: Set Interfaces in aggregate interface
         provider: "{{ netconf }}"
       with_items: "{{ chassis_fpc.split(',') }}"
@@ -46,8 +48,10 @@
           - set interfaces ae0 aggregated-ether-options lacp active
           - set interfaces ae0 unit 0 family ethernet-switching interface-mode trunk
           - set interfaces ae0 unit 0 family ethernet-switching vlan members all
+          - set interfaces ae0 description "Trunk to ae0"
           - set interfaces ae1 aggregated-ether-options lacp active
           - set interfaces ae1 unit 0 family ethernet-switching interface-mode trunk
           - set interfaces ae1 unit 0 family ethernet-switching vlan members all
+          - set interfaces ae1 description "Trunk to ae1"
         comment: Set Network Inferface Trunk settings
         provider: "{{ netconf }}"
