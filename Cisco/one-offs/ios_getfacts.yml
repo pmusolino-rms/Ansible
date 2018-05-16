@@ -1,0 +1,22 @@
+---
+- name: Get IOS Facts
+  gather_facts: false
+  hosts: ios_core_sw
+  tasks:
+    - name: Get Interface facts for devices
+      ios_facts:
+        gather_subset: interfaces
+      register: iosfacts_out
+      when: ansible_network_os == 'ios'
+
+    - name: Get list of VLAN interfaces
+      set_fact:
+          #vlan_interfaces: "{{ iosfacts_out.ansible_facts.ansible_net_interfaces | regex_findall('Vlan') }}" 
+          vlan_interfaces: "{{ iosfacts_out.ansible_facts.ansible_net_interfaces }}" 
+    - name: Debug
+      debug:
+        msg: "{{ vlan_interfaces }}"
+
+    - name: Output data to file in YAML format
+      copy: content="{{ iosfacts_out | to_nice_yaml }}" dest="out/{{inventory_hostname}}_iosfacts.yml"
+

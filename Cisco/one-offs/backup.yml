@@ -1,0 +1,9 @@
+---
+- name: Backup Cisco IOS devices
+  hosts: ios
+  tasks:
+    - name: BACKUP CONFIG TO LOCAL DIR
+      ios_config:
+        backup: yes
+      register: backup_ios_location
+      when: ansible_network_os == 'ios'

@@ -1,0 +1,16 @@
+---
+oldhelper: 10.0.0.1
+newhelper: 10.0.0.2
+guest_vlan: 
+  - { name: GUEST, vlan_id: 999, state: present }
+test_vlan: 
+  - { name: TEST, vlan_id: 99, state: present, subnet_mask: 255.255.255.0 }
+data_vlans: 
+  - { name: DATA-101, vlan_id: 101, state: present, subnet_mask: 255.255.255.0 }
+  - { name: DATA-102, vlan_id: 102, state: present, subnet_mask: 255.255.255.0 } 
+  - { name: DATA-103, vlan_id: 103, state: present, subnet_mask: 255.255.255.0 }
+  - { name: DATA-104, vlan_id: 104, state: present, subnet_mask: 255.255.255.0 }
+helper_address1: 10.0.0.1
+helper_address2: 10.0.0.2
+helper_address3: 10.0.0.3
+helper_address4: 10.0.0.4

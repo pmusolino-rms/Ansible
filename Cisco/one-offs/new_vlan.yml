@@ -1,0 +1,28 @@
+---
+- name: Add new Vlan
+  hosts: ios_core_sw
+  gather_facts: false
+  tasks:
+    - name: Create DATA Vlans
+      ios_vlan:
+        vlan_id: "{{ item.vlan_id }}"
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+      with_items: "{{ data_vlans }}"
+
+    - name: Create GUEST Vlan
+      ios_vlan:
+        vlan_id: "{{ item.vlan_id }}"
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+      with_items: "{{ guest_vlan }}"
+
+    - name: Create SVI
+      ios_config:
+        src: ./svi.j2
+      with_items: "{{ data_vlans }}"
+
+    - name: Save config to startup when complete
+      ios_config:
+        save_when: modified
+

@@ -1,0 +1,8 @@
+---
+- name: Add new Vlan
+  hosts: ios_core_sw
+  gather_facts: false
+  tasks:
+    - name: Generate SVI Config files
+      template: src=./svi.j2 dest="~/ANSIBLE/out/{{inventory_hostname}}-vlan{{item.vlan_id}}.txt"
+      with_items: "{{ data_vlans }}"

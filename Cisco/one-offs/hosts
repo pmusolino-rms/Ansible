@@ -1,0 +1,18 @@
+localhost	ansible_connection=local
+
+[ios_core_sw]
+core1 ansible_ssh_host=10.0.0.2 ansible_ssh_port=22
+core2 ansible_ssh_host=10.0.0.3 ansible_ssh_port=22
+[cisco_3750:children]
+ios_core_sw
+ios_edge_sw
+
+[ios:children]
+cisco_3750
+[nxos]
+edge1 ansible_ssh_host=10.0.0.4 ansible_ssh_port=22
+[nxos:vars]
+ansible_python_interpreter=python2
+[group1:children]
+nxos
+ios

@@ -1,0 +1,13 @@
+interface Vlan{{item.vlan_id}}
+ description {{item.name}}
+ ip address {{local_supernet}}.{{item.vlan_id}}.{{core_host_ip}} {{item.subnet_mask}}
+ ip helper-address {{helper_address1}}
+ ip helper-address {{helper_address2}}
+ ip helper-address {{helper_address3}}
+ ip helper-address {{helper_address4}}
+ standby {{item.vlan_id}} ip {{local_supernet}}.{{item.vlan_id}}.1
+ standby {{item.vlan_id}} timers 2 6
+ standby {{item.vlan_id}} priority {{core_preempt}}
+ standby {{item.vlan_id}} preempt delay minimum 240
+ arp timeout 300
+end

@@ -3,7 +3,7 @@
 # This is an ineffcient run due to multiple show run interface
 # Better would be to do one show run and parse
 - name: Change  DHCP Helper
-  hosts: some_group
+  hosts: ios_core_sw
   gather_facts: false
   vars:
     vlan_interfaces: []
