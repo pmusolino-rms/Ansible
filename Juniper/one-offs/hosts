@@ -1,0 +1,16 @@
+localhost	ansible_connection=local
+[STATE1_junos_ex]
+switch1 ansible_connection=netconf ansible_ssh_host=10.0.0.2 ansible_ssh_port=830
+switch2 ansible_connection=netconf ansible_ssh_host=10.0.0.3 ansible_ssh_port=830
+[STATE1_junos_ex_camera]
+switch1 ansible_connection=local ansible_ssh_host=10.0.0.3 ansible_ssh_port=830
+
+[STATE2_junos_ex]
+switch3 ansible_connection=netconf ansible_ssh_host=10.1.0.2 ansible_ssh_port=830
+[junos_ex:children]
+STATE1_junos_ex
+STATE2_junos_ex
+[STATE1:children]
+STATE1_junos_ex
+[STATE2:children]
+STATE2_junos_ex

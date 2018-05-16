@@ -1,0 +1,45 @@
+---
+- name: CONFIGURE PORT DESCRIPTIONS
+  hosts: junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: Assign User-Port Description
+      junos_config:
+        lines:
+          - set interfaces interface-range USER-PORTS description user-port
+        comment: Set User-port description
+        provider: "{{ netconf }}"
+
+    - name: Assign Wifi Ports Description
+      junos_config:
+        lines:
+          - set interfaces interface-range WIFI-PORTS description wifi-port
+        comment: Set Wifi-port Description
+        provider: "{{ netconf }}"
+
+    - name: Assign Video-Conference Ports Description
+      junos_config:
+        lines:
+          - set interfaces interface-range VC-PORTS description vc-port
+        comment: Set VC-Port description
+        provider: "{{ netconf }}"
+
+    - name: Assign Aggregate Trunk Port Description
+      junos_config:
+        lines:
+          - set interfaces ae0 description "Trunk to core1"
+          - set interfaces ae1 description "Trunk to core2"
+        comment: Set aggregate interface description
+       provider: "{{ netconf }}"

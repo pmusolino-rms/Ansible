@@ -1,0 +1,23 @@
+---
+ntp1: 10.0.2.10
+ntp2: 10.0.2.11
+dns1: 10.0.3.10
+dns2: 10.0.3.11
+radius1: 10.1.0.10
+radius2: 10.1.0.11
+radius3: 10.1.0.12
+radius_key: someradiuskey
+syslog1: 10.4.0.10
+syslog2: 10.4.0.11
+snmp_location: Location, location Location
+snmp_contact: person@example.com
+snmp_community1: stringcheese
+snmp_client1: 10.0.0.11/32
+snmp_client2: 10.0.0.12/32
+snmp_client3: 10.0.0.13/32
+snmp_trap1: 10.0.0.10
+snmp_trap2: 10.0.0.11
+guest_vlan: 999
+wifi_vlan: 100
+mgmt_default_gw: 10.0.0.1
+mgmt_netmask: 24

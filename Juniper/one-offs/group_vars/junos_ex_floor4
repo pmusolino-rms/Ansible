@@ -1,0 +1,4 @@
+---
+vlans:
+  - { vlan_name: DATA-106, vlan_id: 106} 
+  - { vlan_name: VOICE, vlan_id: 108}

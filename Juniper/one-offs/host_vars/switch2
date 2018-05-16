@@ -1,0 +1,13 @@
+---
+vlans:
+  - { name: VOIP-21, vlanid: 21, user: False, port: USER-PORTS }
+  - { name: DATA-121, vlanid: 121, user: True, port: USER-PORTS }
+  - { name: WIFI, vlanid: 20, user: False, port: WIFI-PORTS }
+  - { name: VIDEO, vlanid: 25, user: False, port: VC-PORTS }
+  - { name: WIFI-GUEST, vlanid: 120, user: False, port: WIFI-PORTS }
+  - { name: GUEST, vlanid: 999, user: False, port: NONE }
+data_vlan_name: DATA-VLAN-102
+data_vlan_id: 102
+data_vlan_state: present
+voice_vlan: 21
+guest_vlan: 999

@@ -1,0 +1,53 @@
+---
+- name: CONFIGURE UPLINKS
+  hosts: junos_ex
+  tasks:
+    - name: DEFINE PROVIDER
+      set_fact:
+        netconf:
+          host: "{{ ansible_ssh_host }}"
+          username: "{{ ansible_ssh_user }}"
+          password: "{{ ansible_ssh_pass }}"
+          port: "{{ port }}"
+          transport: netconf
+          timeout: 30
+
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: Get fpc numbers
+      junos_command:
+        commands:
+          - "show chassis hardware"
+        provider: "{{ netconf }}"
+        display: xml
+      register: result
+
+    - name: output to file
+      copy: content="{{ result.stdout[0] }}" dest=/tmp/fpc_{{ inventory_hostname }}.txt
+
+    - name: SET VARIABLE FPC
+      set_fact:
+        chassis_fpc="{{ lookup('xmlfile', 'file=/tmp/fpc_{{ inventory_hostname }}.txt xpath=.//chassis[name="Chassis"]/chassis-module/name') | replace("\n","") }}"
+
+    - name: Assign Uplink Interface
+      junos_config:
+        lines:
+          - set interfaces ge-{{ item[4:] }}/0/0 ether-options 802.3ad ae0
+          - set interfaces ge-{{ item[4:] }}/0/2 ether-options 802.3ad ae1
+        comment: Set Interfaces in aggregate interface
+        provider: "{{ netconf }}"
+      with_items: "{{ chassis_fpc.split(',') }}"
+      when: item | search("FPC")
+
+    - name: NETWORK INTERFACE TRUNK SETTINGS
+      junos_config:
+        lines:
+          - set interfaces ae0 aggregated-ether-options lacp active
+          - set interfaces ae0 unit 0 family ethernet-switching interface-mode trunk
+          - set interfaces ae0 unit 0 family ethernet-switching vlan members all
+          - set interfaces ae1 aggregated-ether-options lacp active
+          - set interfaces ae1 unit 0 family ethernet-switching interface-mode trunk
+          - set interfaces ae1 unit 0 family ethernet-switching vlan members all
+        comment: Set Network Inferface Trunk settings
+        provider: "{{ netconf }}"

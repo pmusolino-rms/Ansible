@@ -1,0 +1,12 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: junos_ex
+  tasks:
+    - name: JUNIPER CONNECTION TEST
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: SET SYSTEM COMMIT SYNC
+      junos_config:
+        lines:
+          - set system commit synchronize
+        comment: Set system sync

@@ -1,8 +1,9 @@
 ---
 - name: Just the facts maam
-  hosts: nj_junos_ex
-  roles:
-  - Juniper.junos
+  hosts: test-sw01
+  remote_user: admin
+#  ansible_port: 830
+  connection: netconf
   tasks:
   - name: Juniper connection test
     wait_for: host={{ inventory_hostname }} port=830

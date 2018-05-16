@@ -1,6 +1,7 @@
 ---
 - name: Just the facts maam
-  hosts: nj_junos_ex
+  hosts: junos_mx
+  gather_facts: false
   tasks:
   - name: Juniper connection test
     wait_for: host={{ inventory_hostname }} port=830 timeout=60 state=started

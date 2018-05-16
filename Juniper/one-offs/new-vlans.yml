@@ -1,0 +1,37 @@
+---
+- name: CONFIGURE VLANS
+  hosts: junos_ex
+  gather_facts: false
+  tasks:
+    - name: Juniper connection test
+      wait_for: host={{ inventory_hostname }} port={{ port }}
+
+    - name: Define Data Vlans
+      junos_vlan:
+        name: "{{ data_vlan_name }}"
+        vlan_id: "{{ data_vlan_id }}"
+        state: "{{ data_vlan_state }}"
+
+    - name: ENABLE VSTP FOR USER VLAN
+      junos_config:
+        lines:
+          - set protocols vstp vlan {{ data_vlan_id }} bridge-priority 60k
+          - set protocols vstp vlan {{ data_vlan_id }} interface {{ user_ports }} edge
+          - set protocols vstp vlan {{ data_vlan_id }} interface {{ user_ports }} no-root-port
+          - set protocols vstp vlan {{ data_vlan_id }} interface ae0
+          - set protocols vstp vlan {{ data_vlan_id }} interface ae1
+        comment: Set VSTP on all vlans with interfaces
+
+    - name: Define Guest Vlans
+      junos_vlan:
+        name: "{{ guest_vlan_name }}"
+        vlan_id: "{{ guest_vlan_id }}"
+        state: "{{ guest_vlan_state }}"
+
+    - name: ENABLE VSTP FOR GUEST VLAN
+      junos_config:
+        lines:
+          - set protocols vstp vlan {{ guest_vlan_id }} bridge-priority 60k
+          - set protocols vstp vlan {{ guest_vlan_id }} interface ae0
+          - set protocols vstp vlan {{ guest_vlan_id }} interface ae1
+        comment: Set VSTP on guest vlans

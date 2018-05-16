@@ -1,0 +1,37 @@
+---
+ansible_user: someone
+ansible_connection: netconf
+ansible_network_os: junos
+ansible_ssh_pass: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          11111111111111111111111111111111111111111111111111111111111111111111111111111111
+          11111111111111111111111111111111111111111111111111111111111111111111111111111111
+          11111111111111111111111111111111111111111111111111111111111111111111111111111111
+          11111111111111111111111111111111111111111111111111111111111111111111111111111111
+          1234
+port: 830
+ntp1: 10.1.0.10
+ntp2: 10.1.0.11
+dns1: 10.1.1.10
+dns2: 10.1.1.11
+radius1: 10.0.2.11
+radius2: 10.0.2.12
+radius3: 10.0.2.13
+radius_key: someradiuskey
+syslog1: 10.0.3.11
+syslog2: 10.0.3.12
+snmp_location: Location2, Location
+snmp_contact: person@example.com
+snmp_community1: stringcheese
+snmp_client1: 10.0.0.11/32
+snmp_client2: 10.0.0.12/32
+snmp_client3: 10.0.0.13/32
+snmp_trap1: 10.0.0.11
+snmp_trap2: 10.0.0.12
+guest_vlan_id: 999
+guest_vlan_name: GUEST
+guest_vlan_state: present
+wifi_vlan: 101
+mgmt_default_gw: 10.0.0.1
+mgmt_netmask: 24
+user_ports: USER-PORTS

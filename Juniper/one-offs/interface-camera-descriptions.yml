@@ -1,6 +1,6 @@
 ---
-- name: CONFIGURE JUNIPER EX
-  hosts: junos_ex
+- name: CONFIGURE CAMERA PORT DESCRIPTIONS
+  hosts: junos_ex_camera
   tasks:
     - name: DEFINE PROVIDER
       set_fact:
@@ -12,13 +12,13 @@
           transport: netconf
           timeout: 30
 
-    - name: JUNIPER CONNECTION TEST
+    - name: Juniper connection test
       wait_for: host={{ inventory_hostname }} port={{ port }}
 
-    - name: DELETE DEFAULT VLAN FROM INTERFACE
+
+    - name: Assign Security Camera Ports Description
       junos_config:
         lines:
-          - delete interfaces ge-0/0/{{ item }} unit 0 family ethernet-switching vlan members default
-        comment: Deleting default interface
+          - set interfaces interface-range CAMERA-PORTS description security-camera-port
+        comment: Set Camera-Port description
         provider: "{{ netconf }}"
-      with_sequence:  start=3 end=47
