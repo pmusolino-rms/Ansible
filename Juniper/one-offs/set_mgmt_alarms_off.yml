@@ -1,0 +1,17 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: junos_ex
+  gather_facts: false
+  tasks:
+    - name: FIND DEVICES WHERE MGMT DOWN
+      junos_command:
+        commands:
+          - show system alarms 
+        wait_for: result[0] contains "Management Ethernet Link Down"
+        retries: 2
+# Devices where interface is up or alert already squelched will not run the below
+    - name: REMOVE ALARMS FOR UNUSED MGMT LINK
+      junos_config:
+        lines:
+          - set chassis alarm management-ethernet link-down ignore
+        comment: Turn off alarms for unused management link

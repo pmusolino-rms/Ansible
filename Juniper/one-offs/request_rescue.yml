@@ -1,0 +1,16 @@
+---
+- name: CONFIGURE JUNIPER EX
+  hosts: all_junos_ex
+  gather_facts: false
+  tasks:
+    - name: REQUEST SYSTEM CONFIG RESCUE SAVE
+      junos_command:
+        commands:
+          - show system alarms
+          - request system configuration rescue save
+          - show system alarms
+        display: text
+      register: myoutput
+
+    - name: SHOW RESULT SET
+      debug: msg="{{ myoutput.stdout }}"
